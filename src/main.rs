@@ -1,4 +1,3 @@
-use blake2::{Blake2b512, Digest};
 use clap::Parser;
 use hex::ToHex;
 use std::io::prelude::*;
@@ -44,6 +43,7 @@ fn main() {
     let sha256 = sha256(&args.input);
     let sha512 = sha512(&args.input);
     let blake3 = blake3(&args.input);
+    let blake2s256 = blake2s_256(&args.input);
     let blake2b512 = blake2b_512(&args.input);
     let sha3_256 = sha3_256(&args.input);
     let sha3_512 = sha3_512(&args.input);
@@ -54,6 +54,9 @@ fn main() {
 
 Sha3 256:
 {sha3_256} {file_name}
+
+Blake2s:
+{blake2s256} {file_name}
 
 Blake3:
 {blake3} {file_name}
@@ -101,7 +104,7 @@ Sha1:
 }
 
 fn sha256(file_path: &Path) -> String {
-    use sha2::Sha256;
+    use sha2::{Sha256, Digest};
     let mut file = File::open(file_path).expect("Unable to read file");
     let mut buffer = Vec::new();
     file.read_to_end(&mut buffer)
@@ -115,7 +118,7 @@ fn sha256(file_path: &Path) -> String {
 }
 
 fn sha512(file_path: &Path) -> String {
-    use sha2::Sha512;
+    use sha2::{Sha512, Digest};
     let mut file = File::open(file_path).expect("Unable to read file");
     let mut buffer = Vec::new();
     file.read_to_end(&mut buffer)
@@ -129,7 +132,7 @@ fn sha512(file_path: &Path) -> String {
 }
 
 fn sha3_256(file_path: &Path) -> String {
-    use sha3::Sha3_256;
+    use sha3::{Sha3_256, Digest};
     let mut file = File::open(file_path).expect("Unable to read file");
     let mut buffer = Vec::new();
     file.read_to_end(&mut buffer)
@@ -143,7 +146,7 @@ fn sha3_256(file_path: &Path) -> String {
 }
 
 fn sha3_224(file_path: &Path) -> String {
-    use sha3::Sha3_224;
+    use sha3::{Sha3_224, Digest};
     let mut file = File::open(file_path).expect("Unable to read file");
     let mut buffer = Vec::new();
     file.read_to_end(&mut buffer)
@@ -157,7 +160,7 @@ fn sha3_224(file_path: &Path) -> String {
 }
 
 fn sha3_384(file_path: &Path) -> String {
-    use sha3::Sha3_384;
+    use sha3::{Sha3_384, Digest};
     let mut file = File::open(file_path).expect("Unable to read file");
     let mut buffer = Vec::new();
     file.read_to_end(&mut buffer)
@@ -171,7 +174,7 @@ fn sha3_384(file_path: &Path) -> String {
 }
 
 fn sha3_512(file_path: &Path) -> String {
-    use sha3::Sha3_512;
+    use sha3::{Sha3_512, Digest};
     let mut file = File::open(file_path).expect("Unable to read file");
     let mut buffer = Vec::new();
     file.read_to_end(&mut buffer)
@@ -185,7 +188,7 @@ fn sha3_512(file_path: &Path) -> String {
 }
 
 fn sha1(file_path: &Path) -> String {
-    use sha1::Sha1;
+    use sha1::{Sha1, Digest};
     let mut file = File::open(file_path).expect("Unable to read file");
     let mut buffer = Vec::new();
     file.read_to_end(&mut buffer)
@@ -199,7 +202,7 @@ fn sha1(file_path: &Path) -> String {
 }
 
 fn md5(file_path: &Path) -> String {
-    use md5::Md5;
+    use md5::{Md5, Digest};
     let mut file = File::open(file_path).expect("Unable to read file");
     let mut buffer = Vec::new();
     file.read_to_end(&mut buffer)
@@ -223,12 +226,29 @@ fn blake3(file_path: &Path) -> String {
 }
 
 fn blake2b_512(file_path: &Path) -> String {
+    use blake2::{Blake2b512, Digest};
     let mut file = File::open(file_path).expect("Unable to read file");
     let mut buffer = Vec::new();
     file.read_to_end(&mut buffer)
         .expect("Unable to read file contents");
 
     let mut hasher = Blake2b512::new();
+
+    hasher.update(&buffer);
+
+    let res = hasher.finalize();
+
+    res.encode_hex::<String>()
+}
+
+fn blake2s_256(file_path: &Path) -> String {
+    use blake2::{Blake2s256, Digest};
+    let mut file = File::open(file_path).expect("Unable to read file");
+    let mut buffer = Vec::new();
+    file.read_to_end(&mut buffer)
+        .expect("Unable to read file contents");
+
+    let mut hasher = Blake2s256::new();
 
     hasher.update(&buffer);
 
