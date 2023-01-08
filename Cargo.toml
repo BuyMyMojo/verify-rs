@@ -2,6 +2,7 @@
 name = "verify-cli"
 version = "0.1.0"
 edition = "2021"
+repository = "https://github.com/BuyMyMojo/verify-rs"
 authors = ["BuyMyMojo <hello@buymymojo.net>"]
 description = "A cli tool for getting multiple hashes of a file for quick verification"
 license = "MIT OR Apache-2.0"
